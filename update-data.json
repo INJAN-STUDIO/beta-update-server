@@ -1,0 +1,22 @@
+{
+  "keys": {
+    "BETA-7F3A-92C1-4D8E-B5F2": {
+      "fingerprint": "a1b2c3d4e5f67890",
+      "hostname": "user-pc",
+      "username": "user",
+      "registered_at": "2026-06-24 10:00:00"
+    },
+    "BETA-ABCD-EFGH-IJKL-MNOP": {
+      "fingerprint": "z9y8x7w6v5u43210",
+      "hostname": "another-pc",
+      "username": "friend",
+      "registered_at": "2026-06-24 11:30:00"
+    }
+  },
+  "updates": {
+    "current_version": "1.0.1",
+    "release_date": "2026-06-24",
+    "changelog": "Fixed battery drain, Updated ZABER browser",
+    "download_url": "https://drive.google.com/your-update-link"
+  }
+}
