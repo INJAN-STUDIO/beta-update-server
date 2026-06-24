@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BETA OS - Update Check</title>
+    <style>
+        body {
+            background: #0a0e1a;
+            color: #00e5ff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            padding: 40px;
+            border: 2px solid #00e5ff;
+            border-radius: 16px;
+            background: rgba(10, 14, 26, 0.9);
+            box-shadow: 0 0 40px rgba(0, 229, 255, 0.2);
+            text-align: center;
+        }
+        input, button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            margin: 10px 0;
+        }
+        input {
+            background: #111;
+            border: 1px solid #00e5ff;
+            color: white;
+        }
+        button {
+            background: #00e5ff;
+            color: #0a0e1a;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .success { border: 1px solid #00ff88; color: #00ff88; }
+        .error { border: 1px solid #ff4444; color: #ff4444; }
+        .duplicate { border: 1px solid #ffaa00; color: #ffaa00; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔷 BETA OS Updates</h1>
+        <p>Enter your device key to check for updates</p>
+        <input type="text" id="deviceKey" placeholder="BETA-XXXX-XXXX-XXXX-XXXX">
+        <input type="text" id="fingerprint" placeholder="Hardware Fingerprint (auto-filled)">
+        <button onclick="checkUpdates()">Check for Updates</button>
+        <div id="result"></div>
+        <div style="font-size:12px; color:#666; margin-top:20px;">Powered by BETA OS</div>
+    </div>
+
+    <script>
+        async function checkUpdates() {
+            const key = document.getElementById('deviceKey').value.trim();
+            const fingerprint = document.getElementById('fingerprint').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (!key || !fingerprint) {
+                resultDiv.innerHTML = '<div class="error">Please enter your key and fingerprint.</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div>⏳ Validating key...</div>';
+
+            try {
+                const response = await fetch('update-data.json');
+                const data = await response.json();
+
+                if (data.keys && data.keys[key]) {
+                    if (data.keys[key].fingerprint === fingerprint) {
+                        // Valid key + matching fingerprint
+                        let html = `<div class="success">✅ Key validated successfully</div>`;
+                        html += `<div style="margin-top: 20px;"><b>Latest Version:</b> ${data.updates.current_version}</div>`;
+                        html += `<div><b>Release Date:</b> ${data.updates.release_date}</div>`;
+                        html += `<div><b>Changelog:</b> ${data.updates.changelog}</div>`;
+                        html += `<a href="${data.updates.download_url}" style="display: inline-block; background: #00e5ff; color: #0a0e1a; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 15px;">📥 Download Update</a>`;
+                        resultDiv.innerHTML = html;
+                    } else {
+                        resultDiv.innerHTML = '<div class="duplicate">⚠️ This key is already in use on another device.</div>';
+                    }
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ Invalid key. Please contact BETA OS support.</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">⚠️ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
